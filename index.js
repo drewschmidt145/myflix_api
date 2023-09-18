@@ -1,10 +1,10 @@
-const express = require("express");
-    morgan = require('morgan');
+const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
 // for logging in terminal
-app.use(morgan,('common'));
+app.use(morgan('common'));
 
 // get request
 app.get('/', (req, res) => {
@@ -54,23 +54,14 @@ let topMovies = [
     },
 ];
 
-app.get('/movie', (req, res) => {
+app.get('/movies', (req, res) => {
     res.json(topMovies);
 });
+
 
 // for getting files in public file
 app.use(express.static('public'));
 
-// for errors and logging
-const bodyParser = require('body-parser'),
-    methodOverride = require('method-override');
-
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
-app.use(bodyParser.json());
-app.use(methodOverride());
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -79,5 +70,5 @@ app.use((err, req, res, next) => {
 
 // port
 app.listen(8080, () => {
-    console.log('Your ap is listening on Port 8080.');
+    console.log('Your app is listening on Port 8080.');
 });
