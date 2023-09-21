@@ -11,5 +11,184 @@
         This application will allow users to access information regarding movies, directors and other movie relating information. 
         This includes sorting and creating personal list of their personal favorites.
     </p>
+    
+    <table>
+        <thead>
+            <tr>
+                <td>Business Logic</td>
+                <td>URL</td>
+                <td>HTTP Method</td>
+                <td>Path Variables</td>
+                <td>Request body data format in JSON</td>
+                <td>Response body data format in JSON</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Return a list of all movies to the user</td>
+                <td>/movies</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>None</td>
+                <td>A JSON object holding an array with all movies.</td>
+            </tr>
+            <tr>
+                <td>Return data of a single movie to user</td>
+                <td>/movies/:Title</td>
+                <td>GET</td>
+                <td>Title: Inception</td>
+                <td>None</td>
+                <td>A JSON object that contains data of a single movie. This includes description, genre, director, image URL, and whether it is a featured or not, Example:
+                    <code>
+                        {
+                            "Title": "Inception",
+                            "Description": "A thief who steals corporate secrets...",
+                            "Genre": "Action",
+                            "Director": "Christopher Nolan",
+                            "ImageURl": "https://en.wikipedia.org/wiki/Inception#/media/File:Inception_(2010)_theatrical_poster.jpg",
+                            "Feature Film": "true"
+                        }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Return data about a genre by name/title</td>
+                <td>/genres/:Name</td>
+                <td>GET</td>
+                <td>Name: Drama</td>
+                <td>None</td>
+                <td>A JSON object containing data about a specific genre including name and description. Example:
+                    <code>
+                        "Genre": {
+                            "Name": "Action",
+                            "Description": "Action film is a film genre in which the protagonist is thrust into a series of events that typically involve violence and physical feats.",
+                        }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Return data by a director by name/title</td>
+                <td>/directors/:Name</td>
+                <td>GET</td>
+                <td>Name: Quentin Tarantino</td>
+                <td>None</td>
+                <td>A JSON object containing data about a specific director including name, bio, birthday.
+                    <code>
+                        "Name": "Christopher Nolan",
+                        "Bio": "Christopher Edward Nolan is a British and American filmmaker...",
+                        "Birthday": "1970-07-30T00:00:00.000Z"
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Allow new users to register</td>
+                <td>/users</td>
+                <td>POST</td>
+                <td>None</td>
+                <td>A JSON object with user information structured like this:
+                    <code>
+                        {
+                            "Username": "tomybrady",
+                            "Password": "football123",
+                            "Email": "tomybrady6rings@example.com",
+                            "Birthday": "1977-08-03T00:00:00.000Z"
+                        }
+                    </code>
+                </td>
+                <td>A JSON object containing user information as well as userID and favorite movie array.
+                    <code>
+                        {
+                            "Username": "tomybrady",
+                            "Password": "football123",
+                            "Email": "tomybrady6rings@example.com",
+                            "Birthday": "1977-08-03T00:00:00.000Z",
+                            "FavoriteMovies": [],
+                            "_id": "12sdv83nv89kk3",
+                            "__v": 0
+                        }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Allows user to update their info by username</td>
+                <td>/users/:Username</td>
+                <td>PUT</td>
+                <td>Username: tomybrady</td>
+                <td>A JSON object holding the users information that should be changed. Should have a least 1 of the following pairs.
+                    <code>
+                        {
+                            "Username": String,
+                            "Password": String,
+                            "Email": String,
+                            "Birthday": Data
+                        }
+                    </code>
+                </td>
+                <td>A JSON object holding all the users information updated
+                    <code>
+                        {
+                            "Username": "tomybrady",
+                            "Password": "football123",
+                            "Email": "tomybrady7rings@example.com",
+                            "Birthday": "1977-08-03T00:00:00.000Z",
+                            "FavoriteMovies": [],
+                            "_id": "12sdv83nv89kk3",
+                            "__v": 0
+                        }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Allow user to add a movie from their list of favorites</td>
+                <td>/users/:Username/movies/:MovieID</td>
+                <td>POST</td>
+                <td>Username: tomybrady MovieID: 73cv8qwe88vsd</td>
+                <td>None</td>
+                <td>A JSON object containing user information with updated information regarding favoriteMovies
+                    <code>
+                        {
+                            "Username": "tomybrady",
+                            "Password": "football123",
+                            "Email": "tomybrady7rings@example.com",
+                            "Birthday": "1977-08-03T00:00:00.000Z",
+                            "FavoriteMovies": ["23b42hh123j31231jncse"],
+                            "_id": "12sdv83nv89kk3",
+                            "__v": 0
+                        }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Allow user to remove a movie from their list of favorites</td>
+                <td>/users/:Username/movies/:MovieID</td>
+                <td>DELETE</td>
+                <td>Username: tomybrady MovieID: 73cv8qwe88vsd</td>
+                <td>None</td>
+                <td>A JSON object containing user information with updated information regarding favoriteMovies
+                    <code>
+                        {
+                            "Username": "tomybrady",
+                            "Password": "football123",
+                            "Email": "tomybrady7rings@example.com",
+                            "Birthday": "1977-08-03T00:00:00.000Z",
+                            "FavoriteMovies": [],
+                            "_id": "12sdv83nv89kk3",
+                            "__v": 0
+                        }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Allow existing users to deregister</td>
+                <td>/users/:Username</td>
+                <td>DELETE</td>
+                <td>Username: tomybrady</td>
+                <td>None</td>
+                <td>TomyBrady has been Deleted</td>
+            </tr>
+        </tbody>
+    </table>
+
+
 </body>
 </html>
