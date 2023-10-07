@@ -18,6 +18,7 @@
                 <td>Endpoint</td>
                 <td>HTTP Method</td>
                 <td>Description</td>
+                <td>Example of input</td>
             </tr>
         </thead>
         <tbody>
@@ -25,56 +26,81 @@
                 <td>/movies</td>
                 <td>GET</td>
                 <td>Returns all movies</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/users</td>
                 <td>GET</td>
                 <td>Returns all Users</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/movies/:Title</td>
                 <td>GET</td>
                 <td>Returns a movie based on name given</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/movies/genres/:genreName</td>
                 <td>GET</td>
                 <td>Returns movie that have specific genre</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/movies/directors/:directorName</td>
                 <td>GET</td>
                 <td>Returns data from a provided director name</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/users</td>
                 <td>POST</td>
                 <td>Allows new users to registers</td>
+                <td> A JSON object with the following data:
+                    {
+                        "Username": "Example1"
+                        "Password": "examplepassword1"
+                        "Email": "example@gmail.com"
+                        "Birthday": "08-09-2000"
+                    }
+                </td>
             </tr>
             <tr>
                 <td>/users/:Username</td>
                 <td>PUT</td>
                 <td>allows users to update their information</td>
+                <td> A JSON object with the following data updated:
+                    {
+                        "Username": "Example1"
+                        "Password": "examplepassword1"
+                        "Email": "example@gmail.com"
+                        "Birthday": "08-09-2000"
+                    }
+                </td>
             </tr>
             <tr>
                 <td>/users/:Username/movies/:MovieID</td>
                 <td>POST</td>
                 <td>allows users to add movies to their favorites list</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/users/:Username/movies/:MovieID</td>
                 <td>DELETE</td>
                 <td>allows users to delete movies from their favorites list</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/users/:Username</td>
                 <td>DELETE</td>
                 <td>allows users to deregister</td>
+                <td>N/A</td>
             </tr>
             <tr>
                 <td>/</td>
                 <td>GET</td>
                 <td>returns simple message</td>
+                <td>N/A</td>
             </tr>
         </tbody>
     </table>
