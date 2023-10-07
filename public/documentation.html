@@ -18,7 +18,8 @@
                 <td>Endpoint</td>
                 <td>HTTP Method</td>
                 <td>Description</td>
-                <td>Example of input</td>
+                <td>Request</td>
+                <td>Response</td>
             </tr>
         </thead>
         <tbody>
@@ -27,30 +28,35 @@
                 <td>GET</td>
                 <td>Returns all movies</td>
                 <td>N/A</td>
+                <td>Return a List of all movies including data referring to them</td>
             </tr>
             <tr>
                 <td>/users</td>
                 <td>GET</td>
                 <td>Returns all Users</td>
                 <td>N/A</td>
+                <td>Return a list of all users, including all information on their account</td>
             </tr>
             <tr>
                 <td>/movies/:Title</td>
                 <td>GET</td>
                 <td>Returns a movie based on name given</td>
                 <td>N/A</td>
+                <td>Return a single movie based on name, will also give data referring to that movie</td>
             </tr>
             <tr>
                 <td>/movies/genres/:genreName</td>
                 <td>GET</td>
                 <td>Returns movie that have specific genre</td>
                 <td>N/A</td>
+                <td>Returns list of movies that have been given that specific genre</td>
             </tr>
             <tr>
                 <td>/movies/directors/:directorName</td>
                 <td>GET</td>
                 <td>Returns data from a provided director name</td>
                 <td>N/A</td>
+                <td>Returns list of movies that specific director is attached to</td>
             </tr>
             <tr>
                 <td>/users</td>
@@ -64,6 +70,7 @@
                         "Birthday": "08-09-2000"
                     }
                 </td>
+                <td>Returns the same object given in request, but it includes a generated _ID and __v version number attached</td>
             </tr>
             <tr>
                 <td>/users/:Username</td>
@@ -77,30 +84,35 @@
                         "Birthday": "08-09-2000"
                     }
                 </td>
+                <td>Returns the users information with all updated fields</td>
             </tr>
             <tr>
                 <td>/users/:Username/movies/:MovieID</td>
                 <td>POST</td>
                 <td>allows users to add movies to their favorites list</td>
                 <td>N/A</td>
+                <td>Returns Users information, including newly updated favorites list</td>
             </tr>
             <tr>
                 <td>/users/:Username/movies/:MovieID</td>
                 <td>DELETE</td>
                 <td>allows users to delete movies from their favorites list</td>
                 <td>N/A</td>
+                <td>Returns Users information, including newly updated favorites list</td>
             </tr>
             <tr>
                 <td>/users/:Username</td>
                 <td>DELETE</td>
                 <td>allows users to deregister</td>
                 <td>N/A</td>
+                <td>Returns a message verifying that the user has been deleted</td>
             </tr>
             <tr>
                 <td>/</td>
                 <td>GET</td>
                 <td>returns simple message</td>
                 <td>N/A</td>
+                <td>returns simple message</td>
             </tr>
         </tbody>
     </table>
