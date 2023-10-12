@@ -1,10 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
-// const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 const models = require('./models.js');
 
 const app = express();
+
+const { check, validationResult } = require ('express-validator');
 
 const Movies = models.Movie;
 const Users = models.User;
@@ -14,10 +15,8 @@ mongoose.connect('mongodb://localhost:27017/myflix', { useNewUrlParser: true, us
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/*
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-*/
+const cors = require('cors');
+app.use(cors());
 
 // for logging in terminal
 app.use(morgan('common'));
@@ -82,33 +81,47 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', {session
 
 // create user using information provided
 
+app.post('/users',
+  [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], async (req, res) => {
 
-app.post('/users', (req, res) => {
-	Users.findOne({ Username: req.body.Username })
-		.then((user) => {
-			if (user) {
-				return res.status(400).send(req.body.Username + ' already exists');
-			} else {
-				Users.create({
-					Username: req.body.Username,
-					Password: req.body.Password,
-					Email: req.body.Email,
-					Birthday: req.body.Birthday,
-				})
-					.then((user) => {
-						res.status(201).json(user);
-					})
-					.catch((error) => {
-						console.error(error);
-						res.status(500).send('Error: ' + error);
-					});
-			}
-		})
-		.catch((error) => {
-			console.error(error);
-			res.status(500).send('Error: ' + error);
-		});
-});
+  // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
+    await Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
+      .then((user) => {
+        if (user) {
+          //If the user is found, send a response that it already exists
+          return res.status(400).send(req.body.Username + ' already exists');
+        } else {
+          Users
+            .create({
+              Username: req.body.Username,
+              Password: hashedPassword,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday
+            })
+            .then((user) => { res.status(201).json(user) })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+  });
 
 // get all users
 
@@ -138,7 +151,13 @@ app.get('/users/:Username', passport.authenticate('jwt', {session: false}), (req
 
 // updated user information with new data provided
 
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }), 
+    [
+        check('Username', 'Username is required').isLength({min: 5}),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required').not().isEmpty(),
+        check('Email', 'Email does not appear to be valid').isEmail()
+    ], (req, res) => {
     // Verifies account
     if(req.user.Username !== req.params.Username){
         return res.status(400).send('Permission denied');
@@ -220,6 +239,7 @@ app.use((err, req, res, next) => {
 });
 
 // port
-app.listen(8080, () => {
-    console.log('Your app is listening on Port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+    console.log('Listening on Port ' + port);
 });
