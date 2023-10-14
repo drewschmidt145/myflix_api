@@ -169,7 +169,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
         return res.status(400).send('Permission denied');
     }
     // Update Account
-    // let hashedPassword = Users.hashPassword(req.body.Password);
+    let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOneAndUpdate({ Username: req.params.Username }, {
         $set:
         {
