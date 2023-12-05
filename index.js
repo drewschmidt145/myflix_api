@@ -76,8 +76,8 @@ app.get('/movies/:Title', passport.authenticate('jwt', {session: false}), (req, 
 // get information by name of genre
 app.get('/movies/genres/:genreName', passport.authenticate('jwt', {session: false}), (req, res) => {
     Movies.find({ 'Genre.Name': req.params.genreName })
-    .then((movie) => {
-        res.json(movie.Genre);
+    .then((movies) => {
+        res.json(movies);
     })
     .catch((err) => {
         console.error(err);
