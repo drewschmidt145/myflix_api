@@ -21,11 +21,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const cors = require('cors');
-// let allowedOrigins = ["https://main--myflix-2891.netlify.app/"];
+let allowedOrigins = ["https://myflix-2891.netlify.app/", "http://localhost:1234/"];
 
-app.use(cors());
-
-/*
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
@@ -36,7 +33,7 @@ app.use(cors({
     return callback(null, true);
   }
 }));
-*/
+
 
 // for logging in terminal
 app.use(morgan('common'));
