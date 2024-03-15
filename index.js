@@ -258,6 +258,7 @@ app.use(express.static('public'));
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
+    console.log(err);
     res.status(500).send('Something Broke!');
 });
 
