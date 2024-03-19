@@ -1,33 +1,48 @@
-const express = require('express');
-const morgan = require('morgan');
-const mongoose = require('mongoose');
-const models = require('./models.js');
-const dotenv = require('dotenv');
-
+const express = require('express'),
+ morgan = require('morgan'),
+ bodyParser = require('body-parser'),
+ uuid = require('uuid'),
+ mongoose = require('mongoose'),
+ cors = require('cors'),
+ { check, validationResult } = require('express-validator');
 const app = express();
 
-const { check, validationResult } = require ('express-validator');
+// CORS
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:4200', 'http://testsite.com', 'http://localhost:1234', '', '', '', '', ''];
+//allow specific set of origins to access your API
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            // If a specific origin isn’t found on the list of allowed origins
+            let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+            return callback(new Error(message), false);
+        }
+        return callback(null, true);
+    }
+}));
 
-const Movies = models.Movie;
-const Users = models.User;
+app.use(bodyParser.json()); //any time using req.body, the data will be expected to be in JSON format
+app.use(bodyParser.urlencoded({ extended: true }));
 
-dotenv.config({path:__dirname+'/.env'});
-
-// mongoose.connect('mongodb://localhost:27017/myflix', { useNewUrlParser: true, useUnifiedTopology: true });
-
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
-// for logging in terminal
-app.use(morgan('common'));
-
+// Import auth.js
 let auth = require('./auth')(app);
 
+// Import passport and passport.js 
 const passport = require('passport');
 require('./passport');
+
+// log all requests
+app.use(morgan('common'));
+
+// Require Mongoose models from models.js
+const Models = require('./models.js');
+//const { validationResult } = require('express-validator');
+const Movies = Models.Movie;
+const Users = Models.User;
+// mongoose.connect('mongodb://127.0.0.1:27017/movieDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 // Endpoints //
 
