@@ -1,10 +1,10 @@
-const express = require('express'),
- morgan = require('morgan'),
- bodyParser = require('body-parser'),
- uuid = require('uuid'),
- mongoose = require('mongoose'),
- cors = require('cors'),
- { check, validationResult } = require('express-validator');
+const express = require('express')
+const morgan = require('morgan')
+const bodyParser = require('body-parser')
+const uuid = require('uuid')
+const mongoose = require('mongoose')
+const cors = require('cors')
+const { check, validationResult } = require('express-validator');
 const app = express();
 
 // // CORS
