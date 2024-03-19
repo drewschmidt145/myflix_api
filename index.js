@@ -173,37 +173,43 @@ app.get('/users/:Username', passport.authenticate('jwt', {session: false}), (req
 
 // updated user information with new data provided
 
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), 
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
     [
         check('Username', 'Username is required').isLength({min: 5}),
         check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-        check('Password', 'Password is required').not().isEmpty(),
+        check('Password', 'Password is required'), //.not().isEmpty()
         check('Email', 'Email does not appear to be valid').isEmail()
-    ], (req, res) => {
-    // Verifies account
-    if(req.user.Username !== req.params.Username){
-        return res.status(400).send('Permission denied');
+    ], async (req, res) => {
+
+    // check the validation object for errors
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
     }
-    // Update Account
-    let hashedPassword = Users.hashPassword(req.body.Password);
-    Users.findOneAndUpdate({ Username: req.params.Username }, {
-        $set:
+
+    // gives you data already in the database
+    let oldData = Users.findOne({ Username: req.params.Username }); 
+
+    let hashedPassword = req.body.Password? Users.hashPassword(req.body.Password) : Users.findOne({ Username: req.params.Username }).Password;
+    await Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
         {
-            Username: req.body.Username,
-            Password: hashedPassword,
-            Email: req.body.Email,
-            Birthday: req.body.Birthday
+            // If there is new data update the database with new data, else use old data
+            Username: req.body.Username || oldData.Username,
+            Password: hashedPassword, // see hashed variable above
+            Email: req.body.Email || oldData.Email,
+            Birthday: req.body.Birthday || oldData.Birthday
         }
     },
-        { new: true }) // This line makes sure that the updated document is returned
-        .then((updatedUser) => {
-            res.json(updatedUser);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send('Error: ' + err);
-        })
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+        res.json(updatedUser);
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+    })
 });
+
 
 // add a movie to users favorite movie list
 
