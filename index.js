@@ -1,49 +1,52 @@
-const express = require('express')
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
-const uuid = require('uuid')
-const mongoose = require('mongoose')
-const cors = require('cors')
-const { check, validationResult } = require('express-validator');
+const express = require('express');
+const morgan = require('morgan');
+const mongoose = require('mongoose');
+const models = require('./models.js');
+const dotenv = require('dotenv');
+
 const app = express();
 
-// // CORS
-// let allowedOrigins = ['http://localhost:8080', 'http://localhost:4200', 'http://testsite.com', 'http://localhost:1234', '', '', '', '', ''];
-// //allow specific set of origins to access your API
-// app.use(cors({
-//     origin: (origin, callback) => {
-//         if (!origin) return callback(null, true);
-//         if (allowedOrigins.indexOf(origin) === -1) {
-//             // If a specific origin isn’t found on the list of allowed origins
-//             let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-//             return callback(new Error(message), false);
-//         }
-//         return callback(null, true);
-//     }
-// }));
+const { check, validationResult } = require ('express-validator');
+
+const Movies = models.Movie;
+const Users = models.User;
+
+dotenv.config({path:__dirname+'/.env'});
+
+// mongoose.connect('mongodb://localhost:27017/myflix', { useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const cors = require('cors');
+// let allowedOrigins = ["https://main--myflix-2891.netlify.app", "http://localhost:1234"];
+
 app.use(cors());
 
-app.use(bodyParser.json()); //any time using req.body, the data will be expected to be in JSON format
-app.use(bodyParser.urlencoded({ extended: true }));
+/*
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
+*/
 
-// Import auth.js
+// for logging in terminal
+app.use(morgan('common'));
+
 let auth = require('./auth')(app);
 
-// Import passport and passport.js 
 const passport = require('passport');
 require('./passport');
 
-// log all requests
-app.use(morgan('common'));
-
-// Require Mongoose models from models.js
-const Models = require('./models.js');
-//const { validationResult } = require('express-validator');
-const Movies = Models.Movie;
-const Users = Models.User;
-// mongoose.connect('mongodb://127.0.0.1:27017/movieDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
+// Endpoints //
 
 /**
  * CREATE new user
@@ -372,16 +375,17 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
         });
 });
 
+// for getting files in public file
 app.use(express.static('public'));
 
-// error handling
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).send('Something Broke!');
 });
 
-// listen for request
+// port
 const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0.',() => {
+app.listen(port, '0.0.0.0',() => {
     console.log('Listening on Port ' + port);
-})
+});
