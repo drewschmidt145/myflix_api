@@ -25,6 +25,7 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.48.0"
+    "eslint": "^8.48.0",
+    "typedoc": "^0.25.12"
   }
 }
